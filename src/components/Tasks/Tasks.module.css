@@ -1,0 +1,38 @@
+.Tasks {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    padding-bottom: 14px;
+    max-width: 480px;
+    margin: auto;
+    margin-top: 2rem;
+}
+
+.Tasks>span {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.threeDot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0.9;
+    background: none rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+    margin-left: 10px;
+    font-size: 12px;
+    padding: 8px;
+    min-width: auto;
+    border: none;
+    color: white !important;
+}
+
+.tooltip {
+    width: 16px;
+}

@@ -1,0 +1,12 @@
+.card {
+    max-width: 480px;
+    margin: auto;
+    background-color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action__taskItem {
+    transform: translateY(2px);
+    border-left: 6px solid rgb(34, 34, 34);
+}

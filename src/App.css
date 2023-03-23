@@ -14,5 +14,5 @@ main {
 .container {
     transition: all 1s;
     background-color: rgb(186, 73, 73);
-    height: 100vh;
+    min-height: 165vh;
 }

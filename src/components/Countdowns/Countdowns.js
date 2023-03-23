@@ -1,8 +1,8 @@
-import React, { useState, useReducer, Fragment, useEffect, useRef } from "react";
+import React, { useState, useReducer, Fragment, useEffect, useContext } from "react";
 import Button from "../UI/Button";
 import classes from "./Countdowns.module.css";
 import PomodoroTimer from "../PomodoroTimer/PomodoroTimer";
-
+import TaskContext from "../store/task-context";
 const COUNTDOWN_TYPES = ["Pomodoro", "Short Break", "Long Break"];
 
 const countdownReducer = (state, action) => {
@@ -21,8 +21,11 @@ const countdownReducer = (state, action) => {
 };
 
 const Countdowns = (props) => {
+    const [idTask, setIdTask] = useState(0);
+    const taskCtx = useContext(TaskContext)
+
     const timers = {
-        "Pomodoro": 25,
+        "Pomodoro": 1,
         "Short Break": 1,
         "Long Break": 10,
     };
@@ -31,21 +34,19 @@ const Countdowns = (props) => {
         timer: timers.Pomodoro,
         type: "Pomodoro",
     });
-    const [currentPosition, setCurrentPosition] = useState(0);
-    const intervalIdRef = useRef(null);
-
+    const [shouldRender, setShouldRender] = useState(false);
     const handleButtonClick = (countdownType, timer) => {
         if (isRunning) {
             const result = window.confirm("The timer is still running, are you sure you want to switch?");
             if (result) {
                 // user clicked OK
-                resetCheckTime();
+                resetWidth();
                 dispatchCountdown({ type: "set", timer: timer, countdownType: countdownType });
                 setIsRunning(false);
             }
         }
         else {
-            resetCheckTime();
+            resetWidth();
             dispatchCountdown({ type: "set", timer: timer, countdownType: countdownType });
             setIsRunning(false);
         }
@@ -53,7 +54,7 @@ const Countdowns = (props) => {
     };
 
     const handleNextClick = () => {
-        resetCheckTime();
+        resetWidth();
         setIsRunning(!isRunning);
         dispatchCountdown({ type: "next", timers: timers });
     };
@@ -61,38 +62,25 @@ const Countdowns = (props) => {
     const handleStartStop = () => {
         setIsRunning(!isRunning);
     };
-
-    const resetCheckTime = () => {
-        setCurrentPosition(0);
+    const resetWidth = () => {
+        setShouldRender(!shouldRender);
         const checkTimeEl = document.querySelector(`.${classes.checkTime}`);
         if (checkTimeEl) {
             checkTimeEl.style.width = 0;
         }
+    }
+    const resetCheckTime = () => {
+        setIsRunning(false)
+        resetWidth();
+        setShouldRender(!shouldRender);
+        dispatchCountdown({ type: "set", timer: 1, countdownType: "Pomodoro" });
     };
+    const setWidth = (width) => {
+        const checkTimeEl = document.querySelector(`.${classes.checkTime}`);
+        checkTimeEl.style.width = `${width}%`;
+    }
 
-    useEffect(() => {
-        if (isRunning) {
-            const checkTimeEl = document.querySelector(`.${classes.checkTime}`);
-            const intervalId = setInterval(() => {
-                setCurrentPosition((currentPosition) => {
-                    const newCurrentPosition = currentPosition + 1;
-                    const maxPosition = countdown.timer * 60;
-                    const check = (newCurrentPosition * 100) / maxPosition;
-                    if (check >= 100) {
-                        handleButtonClick("Pomodoro", 25);
-                    } else {
-                        checkTimeEl.style.width = `${check}%`;
-                    }
-                    return newCurrentPosition > maxPosition ? 0 : newCurrentPosition;
-                });
-            }, 1000);
-            intervalIdRef.current = intervalId;
-        } else {
-            clearInterval(intervalIdRef.current);
-            intervalIdRef.current = null;
-        }
-        return () => clearInterval(intervalIdRef.current);
-    }, [isRunning, countdown]);
+
     useEffect(() => {
         if (countdown.type === "Short Break") {
             props.setBackgroundColor("#38858a");
@@ -102,6 +90,7 @@ const Countdowns = (props) => {
             props.setBackgroundColor("#ba4949");
         }
     }, [countdown.type]);
+    const createTask = () => setIdTask(idTask + 1);
     return (
         <Fragment>
             <div className={classes.checkTime}></div>
@@ -119,7 +108,13 @@ const Countdowns = (props) => {
                         </Button>
                     ))}
                 </div>
-                <PomodoroTimer key={countdown.type} pomodoroTime={countdown.timer} isRunning={isRunning} />
+                <PomodoroTimer setWidth={setWidth}
+                    setCreateTask={createTask}
+                    key={shouldRender}
+                    pomodoroTime={countdown.timer}
+                    isRunning={isRunning}
+                    resetTime={resetCheckTime}
+                />
                 <div className={classes.button}>
                     <Button className={isRunning ? "pausebtn" : "startbtn"} onClick={handleStartStop}>
                         {isRunning ? "PAUSE" : "START"}
@@ -127,12 +122,17 @@ const Countdowns = (props) => {
                     {isRunning && (
                         <div className={classes.button__img}>
                             <Button onClick={handleNextClick}>
-                                <img src="https://pomofocus.io/icons/next-white3.png" alt="img" />
+                                <img className={classes.button__next} src="https://pomofocus.io/icons/next-white3.png" alt="img" />
                             </Button>
                         </div>
                     )}
                 </div>
             </div>
+            <div className={classes.idTask}>#{idTask}</div>
+            <div className={classes.nameTask}>
+                {taskCtx.tasks.length > 0 ?
+                    taskCtx.tasks.find(task => task.id === taskCtx.selectedTaskId)?.title :
+                    countdown.type === "Pomodoro" ? "Time to focus!" : "Time for a break!"}</div>
         </Fragment>
     );
 };

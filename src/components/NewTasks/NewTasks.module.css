@@ -1,0 +1,44 @@
+.newTask {
+    box-sizing: border-box;
+    width: 100%;
+    width: 480px;
+    margin: auto;
+    height: 64px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0.8;
+    margin-top: 12px;
+    border: 2px dashed rgba(255, 255, 255, 0.4);
+}
+
+.newTask:hover {
+    background-color: rgba(0, 0, 0, 0.15);
+    transition: all 1ms;
+
+}
+
+
+
+.addImg {
+    width: 18px;
+    margin-right: 8px;
+    opacity: 0.8;
+}
+
+.addBtn {
+    opacity: 0.8;
+    font-weight: bold;
+    color: white;
+}
+
+.newTask:hover .addImg {
+    opacity: 1;
+}
+
+.newTask:hover .addBtn {
+    opacity: 1;
+}

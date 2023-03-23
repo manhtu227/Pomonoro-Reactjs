@@ -32,7 +32,7 @@
     width: 17px;
 }
 
-span {
+.icon+span {
     margin-left: 5px;
 }
 

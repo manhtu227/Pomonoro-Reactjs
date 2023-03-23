@@ -35,7 +35,7 @@
     width: 100%;
 }
 
-img {
+.button__next {
     width: 22px;
     opacity: 0.9;
 }
@@ -54,7 +54,30 @@ img {
     justify-content: center;
 }
 
-img:hover {
+.button__next:hover {
     opacity: 0.5;
     cursor: pointer;
+}
+
+.idTask {
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+    color: white;
+    /* display: inline-block; */
+    font-size: 16px;
+    opacity: 0.6;
+    margin-bottom: 4px;
+}
+
+.idTask:hover {
+    opacity: 1;
+}
+
+.nameTask {
+    font-size: 18px;
+    font-weight: 400;
+    color: white;
+    /* overflow-wrap: break-word; */
+    text-align: center;
 }
